@@ -56,6 +56,8 @@ UGE aims to combine the best of modern game engines:
 
 ## 📁 Repository Structure
 
+---
+
 Unified-Game-Engine/
 ├── assets/                  # Logo, icons, etc.
 │   └── uge-logo.png         # Engine logo
@@ -82,7 +84,7 @@ Unified-Game-Engine/
 ├── README.md                 # This file
 └── LICENSE                   # MIT License
 
-
+---
 
 ---
 
