@@ -55,3 +55,124 @@ UGE aims to combine the best of modern game engines:
 ---
 
 ## 📁 Repository Structure
+
+Unified-Game-Engine/
+├── assets/                  # Logo, icons, etc.
+│   └── uge-logo.png         # Engine logo
+├── src/                     # Core source code
+│   ├── Core/
+│   │   ├── Window.h
+│   │   └── Window.cpp
+│   ├── ECS/
+│   │   ├── Entity.h
+│   │   ├── Registry.h
+│   │   └── Components/
+│   │       ├── Transform.h
+│   │       └── ScriptComponent.h
+│   ├── Scripting/
+│   │   ├── ScriptEngine.h
+│   │   └── ScriptEngine.cpp
+│   └── main.cpp
+├── third_party/              # Vendored dependencies
+│   └── sol/                  # sol2 (Lua bindings)
+├── .github/
+│   └── workflows/
+│       └── cmake-build.yml   # CI for Windows/Linux
+├── CMakeLists.txt            # Root CMake file
+├── README.md                 # This file
+└── LICENSE                   # MIT License
+
+
+
+---
+
+## 🔧 Building UGE
+### Prerequisites
+- **CMake** (≥ 3.10)
+- **C++17** compiler (GCC, Clang, or MSVC)
+- **Dependencies**:
+  - GLFW
+  - GLEW
+  - GLM
+  - Lua 5.4
+
+### Linux (Zorin OS/Ubuntu)
+```bash
+# Install dependencies
+sudo apt update
+sudo apt install -y cmake g++ pkg-config libglfw3-dev libglew-dev liblua5.4-dev
+
+# Clone and build
+git clone https://github.com/shivamcodeing/Unified-Game-Engine.git
+cd Unified-Game-Engine
+mkdir build && cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+make -j\$(nproc)
+
+# Windows (MSYS2/MinGW)
+
+# Install dependencies via MSYS2
+pacman -S --needed cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-glfw mingw-w64-x86_64-glew mingw-w64-x86_64-lua
+
+# Clone and build
+git clone https://github.com/shivamcodeing/Unified-Game-Engine.git
+cd Unified-Game-Engine
+mkdir build && cd build
+cmake .. -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release
+mingw32-make -j\$(nproc)
+
+# 🤝 Contributing
+
+Contributions are welcome! Open an issue or submit a pull request.
+
+# 📜 License
+This project is licensed under the MIT License – see LICENSE for details.
+
+
+---
+
+#### **3. GitHub Actions CI Workflow**
+Create the directory `.github/workflows/` and add a file named `cmake-build.yml` with the following content:
+
+```yaml
+name: CMake Build
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install dependencies (Linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt update
+        sudo apt install -y cmake g++ pkg-config libglfw3-dev libglew-dev liblua5.4-dev
+
+    - name: Install dependencies (Windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install -y cmake mingw
+        # Note: For Windows, you may need to manually install GLFW, GLEW, and Lua via vcpkg or other package managers.
+        # This is a placeholder; adjust as needed for your environment.
+
+    - name: Configure CMake
+      run: |
+        mkdir build
+        cd build
+        cmake .. -DCMAKE_BUILD_TYPE=Release
+
+    - name: Build
+      run: |
+        cd build
+        cmake --build . --config Release --parallel
